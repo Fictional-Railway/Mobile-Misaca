@@ -140,10 +140,6 @@
 
       <div id="view-payment" style="display: none; padding-top: 20px;">
         <div style="padding: 0 20px; text-align: center;">
-          <div class="pay-info-box">
-            <div style="color:var(--text-sub); font-size:12px;">支払額</div>
-            <div class="yen" id="payment-amount" style="font-size:24px; font-weight:700;">¥---</div>
-          </div>
           
           <div class="touch-area" onclick="executePayment()" style="cursor:pointer;">
             <div style="width:80px; height:80px; border:4px solid #007aff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
@@ -222,9 +218,9 @@
     let currentRandomFare = 0; // 今回の決済額
 
     const masterData = {
-      wakasa: { name: "若狭海岸鉄道", stations: ["東江", "江崎", "物部", "市崎", "伊舟", "汐崖", "北汐崖", "渡町", "北香津", "香津", "万竹", "早手川" ,"北若狭" ,"若狭" ,"県庁前" ,"西銀樂"], trains: [{name: "特急もののべ", base: 500}, {name: "特急山南", base: 500}, {name: "寝台特急早手・敦賀", base: 2500}] },
-      sofu: { name: "蒼風急行", stations: ["東江", "葉が山", "美浜", "高島市"], trains: [{name: "特急せせらぎ", base: 400}] },
-      kyobashi: { name: "京橋鉄道", stations: ["香津", "若狭", "馬土川", "日谷", "雪吹", "舞鶴", "鳥山", "文阪橋"], trains: [{name: "特急早手", base: 600}] }
+wakasa: { name: "若狭海岸鉄道", stations: ["東江", "江崎", "物部", "市崎", "伊舟", "汐崖", "北汐崖", "渡町", "北香津", "香津", "万竹", "早手川" ,"北若狭" ,"若狭" ,"県庁前" ,"西銀樂"], trains: [{name: "特急もののべ", base: 500}, {name: "特急山南", base: 500}, {name: "寝台特急早手・敦賀", base: 2500}, {name: "ライナー各種", base: 300}, {name: "ホリデー快速各種", base: 200}] },
+      sofu: { name: "蒼風急行", stations: ["東江", "葉が山", "月見池公園口" ,"美浜", "蒼急牧野", "高島市"], trains: [{name: "特急せせらぎ", base: 400}] },
+      kyobashi: { name: "京橋鉄道", stations: ["香津", "万竹", "早手川" ,"北若狭" ,"若狭" ,"県庁前" ,"西銀樂" ,"絹野" ,"七宮" ,"瓜津浜" ,"駄銭路" ,"馬土川" ,"日谷", "正岡", "松尾", "雪吹", "舞鶴", "物部海岸", "東物部", "物部", "市崎", "舟谷", "伊舟", "秦見", "月の原", "大房", "橋田", "鳥山", "中甲日", "阿田", "歌川", "文阪橋"], trains: [{name: "特急早手", base: 600}, {name: "特急徳峰", base: 600}, {name: "特急文阪", base: 600}] }
     };
 
     window.onload = function() {
