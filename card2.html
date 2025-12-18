@@ -11,27 +11,18 @@
   <title>モバイルMisaca</title>
 
   <style>
-    body, html {
-        overflow: hidden;
-        height: 100%;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", Arial, sans-serif;
-      background: #f1f1f1;
-      color: #222;
-      -webkit-user-select: none; /* テキスト選択を禁止してアプリ感を出す */
-    }
+    /* 全体は固定（スクロールさせない） */
+    body, html { overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", Arial, sans-serif; background: #f1f1f1; color: #222; -webkit-user-select: none; }
 
     .app {
       max-width: 420px;
       margin: 0 auto;
       background: #fff;
-      min-height: 100vh;
-      position: relative;
+      height: 100vh; /* 画面いっぱいの高さ */
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .header {
@@ -41,107 +32,65 @@
       border-bottom: 1px solid #e5e5e5;
       background: #fff;
       flex-shrink: 0;
+      z-index: 10;
     }
 
+    /* コンテンツエリア：ここ自体をスクロール可能に */
     .content-area {
       flex: 1;
-      overflow-y: auto;
-      padding-bottom: 80px;
+      overflow-y: auto; /* 中身が溢れたらスクロール */
+      -webkit-overflow-scrolling: touch; /* iOSの慣性スクロール */
+      background: #fff;
     }
 
-    .card-container {
-      padding-top: 20px;
-      flex-shrink: 0;
-    }
-
-    .misaca-img {
-      display: block;
-      margin: 0 auto;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      border-radius: 12px;
-    }
-
-    .balance {
-      padding: 20px 16px 0;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .balance .yen {
-      font-size: 28px;
-      font-weight: 700;
-      color: #000;
-      margin-top: 4px;
-    }
-
-    .btn-group {
-      margin-top: 10px;
-    }
-
-    .charge-btn, .use-btn {
-        width: 90%;
-        max-width: 350px;
-        margin: 15px auto;
-        display: block;
-        padding: 12px 0;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
+    .card-container { padding-top: 20px; flex-shrink: 0; }
+    .misaca-img { display: block; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+    
+    .balance { padding: 20px 16px 0; font-size: 14px; color: #555; }
+    .balance .yen { font-size: 28px; font-weight: 700; color: #000; margin-top: 4px; }
+    
+    .ticket-info-display { margin: 15px 16px; padding: 12px; background: #fff9e6; border: 1px solid #f0ca4d; border-radius: 8px; font-size: 13px; display: none; }
+    .btn-group { margin-top: 5px; }
+    .charge-btn, .use-btn { width: 90%; max-width: 350px; margin: 10px auto; display: block; padding: 12px 0; color: white; font-size: 16px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; }
     .charge-btn { background-color: #4fa36a; }
     .use-btn { background-color: #5983b9; }
 
-    /* --- 下から出てくる案内バナー --- */
-    #pwa-banner {
-      position: fixed;
-      bottom: -100px; /* 最初は画面の外 */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 380px;
-      background: #4fa36a;
-      color: white;
-      padding: 15px;
-      border-radius: 15px;
-      text-align: center;
-      font-size: 13px;
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-      z-index: 2000;
-      transition: bottom 0.8s cubic-bezier(0.22, 1, 0.36, 1); /* ゆっくり動く設定 */
-      line-height: 1.5;
-    }
+    /* 特急券リストのデザイン */
+    .section-title { padding: 15px 16px 5px; font-size: 14px; font-weight: bold; color: #666; background: #fff; position: sticky; top: 0; }
+    .railway-select { margin: 0 16px 15px; }
+    .train-list { margin: 0 16px 20px; display: flex; flex-direction: column; gap: 1px; background: #eee; border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+    .train-item { background: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .train-item:active { background: #f5f5f5; }
 
-    #pwa-banner.show {
-      bottom: 85px; /* タブバーの少し上に出現 */
+    /* タブバー */
+    .tabbar {
+      display: flex;
+      border-top: 1.5px solid #acacac;
+      background: #f1f1f1;
+      height: 60px;
+      flex-shrink: 0;
+      padding-bottom: env(safe-area-inset-bottom); /* iPhoneのバー対策 */
     }
+    .tab { flex: 1; text-align: center; padding-top: 10px; font-size: 10px; color: #666; cursor: pointer; }
+    .tab.active { color: #4fa36a; font-weight: 600; }
 
-    /* --- その他画面要素 --- */
-    #view-payment { text-align: center; padding-top: 20px; }
+    /* 決済画面 */
     .payment-box { background: #fff; margin: 10px 16px; padding: 20px; border-radius: 12px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .touch-area { margin-top: 50px; cursor: pointer; }
+    .touch-area { margin-top: 50px; cursor: pointer; text-align: center; }
     .touch-icon { width: 70px; height: 70px; border: 3px solid #007aff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
     .touch-icon::after { content: ""; width: 25px; height: 40px; border: 2px solid #007aff; border-radius: 4px; }
 
-    .history-list { padding: 0; margin: 0; list-style: none; }
-    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #eee; }
-    .history-left .date { font-size: 12px; color: #888; }
-    .history-left .type { font-size: 16px; font-weight: 500; margin-top: 2px; }
-    .history-right { font-size: 18px; font-weight: 700; }
-    .minus { color: #000; }
-    .plus { color: #4fa36a; }
-
-    .tabbar { display: flex; border-top: 1.5px solid #acacac; background: #f1f1f1; position: fixed; bottom: 0; left: 0; width: 100%; padding-bottom: 5px; z-index: 100; }
-    .tab { flex: 1; text-align: center; padding: 10px 0 6px; font-size: 11px; color: #666; cursor: pointer; }
-    .tab.active { color: #4fa36a; font-weight: 600; }
-
+    /* 履歴 */
+    .history-month-header { background: #f9f9f9; padding: 8px 16px; font-size: 13px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; }
+    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #eee; background: #fff; }
+    
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 3000; }
     .modal { background: #fff; width: 80%; max-width: 320px; border-radius: 12px; padding: 20px; text-align: center; }
     .amount-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .amount-btn { padding: 10px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+    #pwa-banner { position: fixed; bottom: -150px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #4fa36a; color: white; padding: 15px; border-radius: 15px; text-align: center; font-size: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); z-index: 2000; transition: bottom 0.8s; }
+    #pwa-banner.show { bottom: 80px; }
   </style>
 </head>
 <body>
@@ -149,26 +98,37 @@
   <div class="app">
     <div class="header" id="header-text">モバイルMisaca</div>
 
-    <div class="content-area">
+    <div class="content-area" id="main-scroll-area">
       <div class="card-container" id="common-card">
         <img class="misaca-img" src="./image/Misaca.png" width="280px" alt="Misacaカード">
       </div>
 
       <div id="view-main">
-        <div class="balance">
-          チャージ残高
-          <div class="yen" id="balance-display">¥0</div>
-        </div>
+        <div id="active-ticket" class="ticket-info-display"></div>
+        <div class="balance">チャージ残高 <div class="yen" id="balance-display">¥0</div></div>
         <div class="btn-group">
           <button class="use-btn" onclick="showPayment()">使用する</button>
           <button class="charge-btn" onclick="openModal()">入金（チャージ）</button>
         </div>
       </div>
 
+      <div id="view-express" style="display: none;">
+        <div class="section-title">鉄道会社を選択</div>
+        <div class="railway-select">
+          <select id="railway-dropdown" onchange="renderTrainList()" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-size:16px; background:#fff;">
+            <option value="wakasa">若狭海岸鉄道</option>
+            <option value="sofu">蒼風急行</option>
+            <option value="kyobashi">京橋鉄道</option>
+          </select>
+        </div>
+        <div class="section-title">列車を選択</div>
+        <div class="train-list" id="train-list-container"></div>
+      </div>
+
       <div id="view-payment" style="display: none;">
         <div class="payment-box">
           <div style="color:#888; font-size:12px;">残高</div>
-          <div class="yen" id="payment-balance" style="font-size:24px; font-weight:700;">¥0</div>
+          <div class="yen" id="payment-balance">¥0</div>
         </div>
         <div class="touch-area" onclick="executePayment()">
           <div class="touch-icon"></div>
@@ -178,25 +138,20 @@
       </div>
 
       <div id="view-history" style="display: none;">
-        <div style="padding: 16px; font-weight: bold; background: #f9f9f9; border-bottom: 1px solid #eee;">SF履歴</div>
-        <ul class="history-list" id="history-container"></ul>
+        <div id="history-container"></div>
       </div>
     </div>
 
     <div class="tabbar" id="main-tabbar">
       <div class="tab active" id="tab-main" onclick="changeTab('main')">Misaca一覧</div>
-      <div class="tab">特急券/急行券</div>
+      <div class="tab" id="tab-express" onclick="changeTab('express')">特急券<br>急行券</div>
       <div class="tab" id="tab-history" onclick="changeTab('history')">SF履歴</div>
       <div class="tab">チケット購入<br>Misaca管理</div>
     </div>
   </div>
 
-  <div id="pwa-banner">
-    より快適なアプリ版を使いませんか？<br>
-    下の共有ボタンから<strong>「ホーム画面に追加」</strong>してください。
-    <div onclick="this.parentElement.classList.remove('show')" style="font-size:20px; position:absolute; right:12px; top:8px; cursor:pointer;">×</div>
-  </div>
-
+  <div id="pwa-banner">より快適なアプリ版を使いませんか？<br>下の共有ボタンから「ホーム画面に追加」してください。<div onclick="this.parentElement.classList.remove('show')" style="position:absolute; right:12px; top:8px;">×</div></div>
+  
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <div style="font-weight:bold; margin-bottom:15px;">チャージ金額を選択</div>
@@ -214,110 +169,139 @@
   <script>
     let currentBalance = 0;
     let historyData = [];
+    let activeTicket = null;
+
+    const trainData = {
+      wakasa: [
+        {name: "特急もののべ", price: 750}, {name: "特急山南", price: 750}, {name: "寝台特急早手・敦賀", price: 3200},
+        {name: "ホームライナー", price: 500}, {name: "おはようライナー", price: 500}, {name: "海風ライナー", price: 500},
+        {name: "ホリデー快速物部号", price: 300}, {name: "ホリデー快速香津号", price: 300}, {name: "ホリデー快速山南号", price: 300}
+      ],
+      sofu: [{name: "特急せせらぎ", price: 600}],
+      kyobashi: [{name: "特急早手", price: 800}, {name: "特急徳峰", price: 800}, {name: "特急文阪", price: 800}]
+    };
 
     window.onload = function() {
-      const savedBalance = localStorage.getItem('misaca_balance');
-      currentBalance = savedBalance !== null ? parseInt(savedBalance, 10) : 1000;
-      const savedHistory = localStorage.getItem('misaca_history');
-      historyData = savedHistory !== null ? JSON.parse(savedHistory) : [];
+      currentBalance = parseInt(localStorage.getItem('misaca_balance')) || 1000;
+      historyData = JSON.parse(localStorage.getItem('misaca_history')) || [];
+      activeTicket = JSON.parse(localStorage.getItem('misaca_ticket'));
       updateDisplay();
-      renderHistory();
-
-      // ブラウザ版のみバナーを表示
-      setTimeout(() => {
-        const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-        if (!isStandalone) {
-          document.getElementById('pwa-banner').classList.add('show');
-        }
-      }, 1000);
+      renderTrainList();
+      setTimeout(() => { if(!window.navigator.standalone) document.getElementById('pwa-banner').classList.add('show'); }, 1000);
     };
 
     function updateDisplay() {
       const formatted = '¥' + currentBalance.toLocaleString();
       document.getElementById('balance-display').innerText = formatted;
       document.getElementById('payment-balance').innerText = formatted;
+      const ticketDisp = document.getElementById('active-ticket');
+      if(activeTicket) {
+        ticketDisp.innerHTML = `<strong>【特急券情報】</strong><br>${activeTicket.railway}：${activeTicket.name}`;
+        ticketDisp.style.display = 'block';
+      } else {
+        ticketDisp.style.display = 'none';
+      }
       localStorage.setItem('misaca_balance', currentBalance);
       localStorage.setItem('misaca_history', JSON.stringify(historyData));
+      localStorage.setItem('misaca_ticket', JSON.stringify(activeTicket));
     }
 
-    function addHistory(type, amount) {
-      const now = new Date();
-      const dateStr = (now.getMonth() + 1) + '/' + now.getDate();
-      historyData.unshift({ date: dateStr, type: type, amount: amount });
-      renderHistory();
-    }
-
-    function renderHistory() {
-      const container = document.getElementById('history-container');
+    function renderTrainList() {
+      const railway = document.getElementById('railway-dropdown').value;
+      const container = document.getElementById('train-list-container');
+      const railwayName = document.getElementById('railway-dropdown').options[document.getElementById('railway-dropdown').selectedIndex].text;
       container.innerHTML = '';
-      historyData.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'history-item';
-        const isMinus = item.amount < 0;
-        li.innerHTML = `
-          <div class="history-left">
-            <div class="date">${item.date}</div>
-            <div class="type">${item.type}</div>
-          </div>
-          <div class="history-right ${isMinus ? 'minus' : 'plus'}">
-            ${(isMinus ? '' : '+') + item.amount.toLocaleString()}
-          </div>`;
-        container.appendChild(li);
+      trainData[railway].forEach(train => {
+        const div = document.createElement('div');
+        div.className = 'train-item';
+        div.onclick = () => buyTicket(railwayName, train.name, train.price);
+        div.innerHTML = `<span class="train-name">${train.name}</span><span class="train-price">¥${train.price}</span>`;
+        container.appendChild(div);
       });
     }
 
-    function changeTab(target) {
-      document.getElementById('view-main').style.display = 'none';
-      document.getElementById('view-payment').style.display = 'none';
-      document.getElementById('view-history').style.display = 'none';
-      document.getElementById('tab-main').classList.remove('active');
-      document.getElementById('tab-history').classList.remove('active');
+    function buyTicket(railway, name, price) {
+      if(currentBalance < price) { alert("残高が足りません"); return; }
+      if(confirm(`${name} の特急券（¥${price}）を購入しますか？`)) {
+        currentBalance -= price;
+        activeTicket = { railway, name };
+        const now = new Date();
+        historyData.unshift({ year: now.getFullYear(), month: now.getMonth() + 1, date: now.getDate(), type: name + " 券", amount: -price });
+        updateDisplay();
+        alert("購入完了！");
+        changeTab('main');
+      }
+    }
 
-      if (target === 'main') {
+    function changeTab(target) {
+      // スクロール位置を一番上に戻す
+      document.getElementById('main-scroll-area').scrollTop = 0;
+
+      const views = ['view-main', 'view-express', 'view-payment', 'view-history'];
+      views.forEach(v => document.getElementById(v).style.display = 'none');
+      const tabs = ['tab-main', 'tab-express', 'tab-history'];
+      tabs.forEach(t => { if(document.getElementById(t)) document.getElementById(t).classList.remove('active'); });
+
+      if(target === 'main') {
         document.getElementById('view-main').style.display = 'block';
         document.getElementById('common-card').style.display = 'block';
         document.getElementById('main-tabbar').style.display = 'flex';
         document.getElementById('header-text').innerText = 'モバイルMisaca';
         document.getElementById('tab-main').classList.add('active');
-      } else if (target === 'history') {
+      } else if(target === 'express') {
+        document.getElementById('view-express').style.display = 'block';
+        document.getElementById('common-card').style.display = 'none';
+        document.getElementById('header-text').innerText = '特急券・急行券';
+        document.getElementById('tab-express').classList.add('active');
+      } else if(target === 'history') {
+        renderHistory();
         document.getElementById('view-history').style.display = 'block';
         document.getElementById('common-card').style.display = 'none';
         document.getElementById('header-text').innerText = 'SF履歴';
         document.getElementById('tab-history').classList.add('active');
-      } else if (target === 'payment') {
+      } else if(target === 'payment') {
         document.getElementById('view-payment').style.display = 'block';
         document.getElementById('main-tabbar').style.display = 'none';
         document.getElementById('header-text').innerText = '支払い';
       }
     }
 
-    function showPayment() { changeTab('payment'); }
+    function renderHistory() {
+      const container = document.getElementById('history-container');
+      container.innerHTML = '';
+      let lastMonth = "";
+      historyData.forEach(item => {
+        const m = `${item.year}年${item.month}月`;
+        if(m !== lastMonth) {
+          const h = document.createElement('div'); h.className = 'history-month-header'; h.innerText = m;
+          container.appendChild(h); lastMonth = m;
+        }
+        const li = document.createElement('div'); li.className = 'history-item';
+        li.innerHTML = `<div class="history-left"><div class="date">${item.month}/${item.date}</div><div class="type">${item.type}</div></div>
+                        <div class="history-right ${item.amount<0?'minus':'plus'}">${(item.amount<0?'':'+')+item.amount.toLocaleString()}</div>`;
+        container.appendChild(li);
+      });
+    }
 
     function executePayment() {
       const cost = 210;
-      if (currentBalance < cost) {
-        alert("残高が足りません");
-        return;
-      }
+      if(currentBalance < cost) { alert("残高が足りません"); return; }
       setTimeout(() => {
         currentBalance -= cost;
-        addHistory('電車利用', -cost);
+        activeTicket = null;
+        const now = new Date();
+        historyData.unshift({ year: now.getFullYear(), month: now.getMonth()+1, date: now.getDate(), type: '電車利用', amount: -cost });
         updateDisplay();
-        alert("決済完了: " + cost + "円");
+        alert("決済完了。");
         changeTab('main');
       }, 300);
     }
 
+    function showPayment() { changeTab('payment'); }
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-    function addBalance(amount) {
-      currentBalance += amount;
-      addHistory('現金チャージ', amount);
-      updateDisplay();
-      closeModal();
-    }
-
-    window.onclick = function(e) { if (e.target == document.getElementById('modalOverlay')) closeModal(); };
+    function addBalance(amount) { currentBalance += amount; const now = new Date(); historyData.unshift({ year: now.getFullYear(), month: now.getMonth()+1, date: now.getDate(), type: '現金チャージ', amount: amount }); updateDisplay(); closeModal(); }
+    window.onclick = function(e) { if(e.target == document.getElementById('modalOverlay')) closeModal(); };
   </script>
 
 </body>
