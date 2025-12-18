@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misaca Mobile | 若狭海岸鉄道</title>
+    <style>
+        :root {
+            --misaca-blue: #0083b0;
+            --misaca-dark: #005f7a;
+            --accent: #ffd700;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+            margin: 0;
+            color: #333;
+            line-height: 1.6;
+            background-color: #fff;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'); /* 海のイメージ */
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* 紹介セクション */
+        .section {
+            padding: 60px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            text-align: center;
+            color: var(--misaca-blue);
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        /* 手順セクション */
+        .guide-box {
+            background: #e0f2f1;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-num {
+            background: var(--misaca-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: block;
+            width: fit-content;
+            margin: 40px auto;
+            padding: 15px 50px;
+            background: var(--misaca-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <h1><img src="./image/Misaca文字2.png" width="150px" alt=""> Mobile</h1>
+        <p>若狭の旅を、もっと身近に。もっとスマートに。</p>
+        <div style="font-size: 0.9rem;">若狭海岸鉄道 初のデジタルICカード誕生。</div>
+    </section>
+
+    <section class="section">
+        <h2><img src="./image/Misaca文字2.png" width="75px" alt="">モバイルでできること</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>スマホひとつで乗車</h3>
+                <p>もう券売機に並ぶ必要はありません。改札機にタッチするだけでスムーズな旅を。</p>
+            </div>
+            <div class="feature-item">
+                <h3>リアルタイム残高確認</h3>
+                <p>いつでもどこでも、現在の残高やユーザー情報を確認できます。</p>
+            </div>
+            <div class="feature-item">
+                <h3>かんたんチャージ</h3>
+                <p>アプリ内で1,000円からすぐにチャージ可能。旅の途中で足りなくなっても安心です。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="download">
+        <h2>ご利用開始ガイド</h2>
+        <p>Misacaモバイルは、アプリストアからのダウンロードは不要です。以下の手順であなたのホーム画面に追加してください。</p>
+        
+        <div class="guide-box">
+            <h3>iPhone (Safari) の場合</h3>
+            <div class="step"><div class="step-num">1</div><p>下のボタンから「Misacaカード」を開きます。</p></div>
+            <div class="step"><div class="step-num">2</div><p>ブラウザ中央下の<strong>「共有アイコン<i class="fa-solid fa-arrow-up-from-bracket"></i>」</strong>をタップ。</p></div>
+            <div class="step"><div class="step-num">3</div><p>メニューの中にある<strong>「ホーム画面に追加」</strong>を選択。</p></div>
+            
+            <hr style="border: 0; border-top: 1px solid #ccc; margin: 30px 0;">
+            
+            <h3>Android (Chrome) の場合</h3>
+            <div class="step"><div class="step-num">1</div><p>下のボタンから「Misacaカード」を開きます。</p></div>
+            <div class="step"><div class="step-num">2</div><p>右上の<strong>「三点リーダー（⋮）」</strong>をタップ。</p></div>
+            <div class="step"><div class="step-num">3</div><p><strong>「ホーム画面に追加」</strong>をタップ。</p></div>
+        </div>
+
+        <a href="./card-page.html" class="btn">Misacaを発行する<br>(無料)</a>
+    </section>
+
+    <footer>
+        &copy; 2025 若狭海岸鉄道株式会社 / Wakasa Coast Railway<br>
+        ※このサイトは架空のプロジェクトを紹介するものです。
+    </footer>
+
+</body>
+</html>
