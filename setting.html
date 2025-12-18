@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Misaca 設定</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", Arial, sans-serif;
+      background: #f2f4f3;
+      color: #222;
+    }
+    .app {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 100vh;
+    }
+    .topbar {
+      background: #6fb388;
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar .title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .menu {
+      font-size: 22px;
+    }
+    .content {
+      padding: 20px 16px 100px;
+    }
+    h1 {
+      font-size: 26px;
+      margin: 0 0 24px;
+    }
+    .section {
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .description {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .save-btn {
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      background: #6fb388;
+      color: #fff;
+      font-weight: 600;
+    }
+    .count {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      background: #6fb388;
+      color: #fff;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">モバイル Misaca</div>
+      <div class="menu">☰</div>
+    </div>
+
+    <div class="content">
+      <h1>Misacaアカウント設定</h1>
+
+      <div class="section">
+        <div class="section-title">ユーザー名</div>
+        <div class="description">
+          モバイルMisacaのユーザー名を入力してください。<br>
+          （◯◯さんのMisaca と表示されます）
+        </div>
+        <div class="row">
+          <input type="text" placeholder="名前を入力" />
+          <button class="save-btn">保存</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">これまでのMisaca決済回数</div>
+        <div class="count">0 回</div>
+      </div>
+    </div>
+
+    <div class="footer">Misaca ・ モバイルMisaca</div>
+  </div>
+</body>
+</html>
