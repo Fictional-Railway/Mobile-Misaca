@@ -10,65 +10,112 @@
   <title>モバイルMisaca</title>
 
   <style>
+    /* --- テーマカラー定義 --- */
+    :root {
+      --bg-body: #f1f1f1;
+      --bg-app: #ffffff;
+      --bg-header: #ffffff;
+      --bg-section: #f9f9f9;
+      --bg-input: #ffffff;
+      --bg-modal: #ffffff;
+      --text-main: #222222;
+      --text-sub: #888888;
+      --border-color: #e5e5e5;
+      --tab-bg: #f1f1f1;
+      --shadow-color: rgba(0,0,0,0.1);
+      --ticket-bg: #fff9e6;
+      --ticket-border: #f0ca4d;
+      --ticket-text: #222222;
+    }
+
+    /* ダークモード自動対応 */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-body: #000000; --bg-app: #1c1c1e; --bg-header: #1c1c1e;
+        --bg-section: #2c2c2e; --bg-input: #2c2c2e; --bg-modal: #1c1c1e;
+        --text-main: #ffffff; --text-sub: #a1a1a6; --border-color: #38383a;
+        --tab-bg: #121212; --shadow-color: rgba(0,0,0,0.5);
+        --ticket-bg: rgba(240, 202, 77, 0.15); --ticket-border: #f0ca4d; --ticket-text: #ffffff;
+      }
+    }
+
+    /* 強制ダークモード */
+    [data-theme="dark"] {
+      --bg-body: #000000; --bg-app: #1c1c1e; --bg-header: #1c1c1e;
+      --bg-section: #2c2c2e; --bg-input: #2c2c2e; --bg-modal: #1c1c1e;
+      --text-main: #ffffff; --text-sub: #a1a1a6; --border-color: #38383a;
+      --tab-bg: #121212; --shadow-color: rgba(0,0,0,0.5);
+      --ticket-bg: rgba(240, 202, 77, 0.15); --ticket-border: #f0ca4d; --ticket-text: #ffffff;
+    }
+
+    /* 強制ライトモード */
+    [data-theme="light"] {
+      --bg-body: #f1f1f1; --bg-app: #ffffff; --bg-header: #ffffff;
+      --bg-section: #f9f9f9; --bg-input: #ffffff; --bg-modal: #ffffff;
+      --text-main: #222222; --text-sub: #888888; --border-color: #e5e5e5;
+      --tab-bg: #f1f1f1; --shadow-color: rgba(0,0,0,0.1);
+      --ticket-bg: #fff9e6; --ticket-border: #f0ca4d; --ticket-text: #222222;
+    }
+
     body, html { overflow: hidden; height: 100%; margin: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", Arial, sans-serif; background: #f1f1f1; color: #222; -webkit-user-select: none; }
-    .app { max-width: 420px; margin: 0 auto; background: #fff; height: 100vh; display: flex; flex-direction: column; position: relative; }
-    .header { padding: 14px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #e5e5e5; background: #fff; flex-shrink: 0; z-index: 10; }
-    .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #fff; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", Arial, sans-serif; background: var(--bg-body); color: var(--text-main); -webkit-user-select: none; transition: background 0.3s ease, color 0.3s ease; }
+    
+    .app { max-width: 420px; margin: 0 auto; background: var(--bg-app); height: 100vh; display: flex; flex-direction: column; position: relative; transition: background 0.3s ease; }
+    .header { padding: 14px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--border-color); background: var(--bg-header); flex-shrink: 0; z-index: 10; transition: background 0.3s ease; }
+    .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-app); }
     
     /* カード表示 */
     .card-container { padding-top: 20px; flex-shrink: 0; text-align: center; }
-    .misaca-img { display: block; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; transition: filter 0.3s ease; }
-    .card-nickname-display { margin-top: 8px; font-size: 12px; color: #888; font-weight: bold; }
+    .misaca-img { display: block; margin: 0 auto; box-shadow: 0 4px 15px var(--shadow-color); border-radius: 12px; transition: filter 0.3s ease; }
+    .card-nickname-display { margin-top: 8px; font-size: 12px; color: var(--text-sub); font-weight: bold; }
 
-    /* 各種カラーフィルタ */
+    /* カラーフィルタ */
     .color-green { filter: none; }
     .color-blue { filter: hue-rotate(160deg); }
     .color-pink { filter: hue-rotate(280deg); }
     .color-dark { filter: grayscale(1) brightness(0.5); }
 
-    .balance { padding: 20px 16px 0; font-size: 14px; color: #555; }
-    .balance .yen { font-size: 28px; font-weight: 700; color: #000; margin-top: 4px; }
-    .ticket-info-display { margin: 15px 16px; padding: 12px; background: #fff9e6; border: 1px solid #f0ca4d; border-radius: 8px; font-size: 13px; display: none; line-height: 1.4; }
+    .balance { padding: 20px 16px 0; font-size: 14px; color: var(--text-sub); }
+    .balance .yen { font-size: 28px; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+    .ticket-info-display { margin: 15px 16px; padding: 12px; background: var(--ticket-bg); border: 1px solid var(--ticket-border); border-radius: 8px; font-size: 13px; display: none; line-height: 1.4; color: var(--ticket-text); }
     
     .btn-group { margin-top: 5px; }
     .charge-btn, .use-btn { width: 90%; max-width: 350px; margin: 10px auto; display: block; padding: 12px 0; color: white; font-size: 16px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; }
     .charge-btn { background-color: #4fa36a; }
     .use-btn { background-color: #5983b9; }
 
-    /* 決済アニメーション */
-    #view-payment { position: relative; height: 100%; }
-    .flash-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 200; }
-    .flash-active { animation: flashAnim 0.6s ease-out; }
-    @keyframes flashAnim { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
-    .success-animation { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; }
-    .checkmark-svg { width: 120px; height: 120px; margin: 0 auto 20px; }
-    .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 5; stroke-miterlimit: 10; stroke: #4fa36a; fill: none; }
-    .draw-circle { animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
-    .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; stroke-width: 5; stroke: #4fa36a; fill: none; }
-    .draw-check { animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards; }
-    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
-
-    /* 管理ページスタイル */
-    .admin-section { padding: 16px; border-bottom: 1px solid #eee; }
-    .admin-label { font-size: 13px; color: #888; margin-bottom: 10px; font-weight: bold; }
-    .setting-item { background: #fff; border-radius: 8px; overflow: hidden; }
-    .nickname-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+    /* 管理ページ */
+    .admin-section { padding: 16px; border-bottom: 1px solid var(--border-color); }
+    .admin-label { font-size: 13px; color: var(--text-sub); margin-bottom: 10px; font-weight: bold; }
+    .nickname-input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 16px; box-sizing: border-box; background: var(--bg-input); color: var(--text-main); }
     .color-palette { display: flex; gap: 12px; padding: 5px 0; }
     .color-chip { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
     .color-chip.active { border-color: #007aff; }
 
+    /* モード切替スイッチ */
+    .mode-switch { display: flex; background: var(--bg-section); border-radius: 8px; padding: 4px; margin-top: 5px; }
+    .mode-btn { flex: 1; padding: 8px; font-size: 12px; text-align: center; border-radius: 6px; cursor: pointer; color: var(--text-sub); transition: background 0.2s; }
+    .mode-btn.active { background: #007aff; color: #fff; font-weight: bold; }
+
     /* 共通UI */
-    .section-title { padding: 15px 16px 5px; font-size: 13px; font-weight: bold; color: #888; background: #f9f9f9; }
-    .select-box { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .section-title { padding: 15px 16px 5px; font-size: 13px; font-weight: bold; color: var(--text-sub); background: var(--bg-section); }
+    .select-box { padding: 12px 16px; background: var(--bg-app); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .select-value { color: #007aff; font-weight: bold; }
-    .tabbar { display: flex; border-top: 1.5px solid #acacac; background: #f1f1f1; height: 60px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
-    .tab { flex: 1; text-align: center; padding-top: 10px; font-size: 10px; color: #666; cursor: pointer; }
+    .tabbar { display: flex; border-top: 1px solid var(--border-color); background: var(--tab-bg); height: 60px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
+    .tab { flex: 1; text-align: center; padding-top: 10px; font-size: 10px; color: var(--text-sub); cursor: pointer; }
     .tab.active { color: #4fa36a; font-weight: 600; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 3000; }
-    .modal { background: #fff; width: 85%; max-width: 320px; border-radius: 12px; padding: 20px; text-align: center; }
-    .history-month-header { background: #f9f9f9; padding: 8px 16px; font-size: 12px; font-weight: bold; color: #888; border-bottom: 1px solid #eee; }
-    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #eee; background: #fff; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 3000; }
+    .modal { background: var(--bg-modal); width: 85%; max-width: 320px; border-radius: 12px; padding: 20px; text-align: center; color: var(--text-main); }
+    
+    .history-month-header { background: var(--bg-section); padding: 8px 16px; font-size: 12px; font-weight: bold; color: var(--text-sub); border-bottom: 1px solid var(--border-color); }
+    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-color); background: var(--bg-app); }
+    
+    .train-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .train-price { font-weight: bold; color: #007aff; }
+
+    /* 決済画面 */
+    .pay-info-box { background:var(--bg-section); padding:20px; border-radius:12px; box-shadow:0 2px 8px var(--shadow-color); text-align:left; margin-bottom: 40px; }
   </style>
 </head>
 <body>
@@ -91,6 +138,21 @@
         </div>
       </div>
 
+      <div id="view-payment" style="display: none; padding-top: 20px;">
+        <div style="padding: 0 20px; text-align: center;">
+
+          
+          <div class="touch-area" onclick="executePayment()" style="cursor:pointer;">
+            <div style="width:80px; height:80px; border:4px solid #007aff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
+              <div style="width:28px; height:46px; border:3px solid #007aff; border-radius:4px;"></div>
+            </div>
+            <div style="color:var(--text-sub); font-size:18px;">リーダーにかざしてください</div>
+          </div>
+          
+          <div style="margin-top:20px; color:#007aff; font-weight:500;" onclick="changeTab('main')">キャンセル</div>
+        </div>
+      </div>
+
       <div id="view-express" style="display: none;">
         <div class="section-title">路線設定</div>
         <div class="select-box" onclick="toggleRailway()"><div class="select-label">鉄道会社</div><div class="select-value" id="disp-railway">若狭海岸鉄道</div></div>
@@ -107,48 +169,31 @@
           <div class="admin-label">カードの名称</div>
           <input type="text" id="nickname-input" class="nickname-input" placeholder="例：My Misaca" oninput="updateNickname(this.value)">
         </div>
+        
         <div class="admin-section">
           <div class="admin-label">カードカラー</div>
           <div class="color-palette">
-            <div class="color-chip active" style="background:#4fa36a;" onclick="setCardColor('green', this)"></div>
-            <div class="color-chip" style="background:#5983b9;" onclick="setCardColor('blue', this)"></div>
-            <div class="color-chip" style="background:#e87ba5;" onclick="setCardColor('pink', this)"></div>
-            <div class="color-chip" style="background:#333333;" onclick="setCardColor('dark', this)"></div>
+            <div class="color-chip active" id="chip-green" style="background:#4fa36a;" onclick="setCardColor('green', this)"></div>
+            <div class="color-chip" id="chip-blue" style="background:#5983b9;" onclick="setCardColor('blue', this)"></div>
+            <div class="color-chip" id="chip-pink" style="background:#e87ba5;" onclick="setCardColor('pink', this)"></div>
+            <div class="color-chip" id="chip-dark" style="background:#333333;" onclick="setCardColor('dark', this)"></div>
           </div>
         </div>
-        <div class="admin-section" style="font-size: 12px; color: #999; line-height: 1.6;">
+
+        <div class="admin-section">
+          <div class="admin-label">外観モード</div>
+          <div class="mode-switch">
+            <div class="mode-btn" id="mode-auto" onclick="setAppTheme('auto')">自動</div>
+            <div class="mode-btn" id="mode-light" onclick="setAppTheme('light')">ライト</div>
+            <div class="mode-btn" id="mode-dark" onclick="setAppTheme('dark')">ダーク</div>
+          </div>
+        </div>
+
+        <div class="admin-section" style="font-size: 11px; color: var(--text-sub); line-height: 1.6;">
           カード番号: 4502-****-****-9012<br>
-          最終更新: <span id="last-update-time">-</span>
-        </div>
-        <div class="admin-section" style="font-size: 12px; color: #999; line-height: 1.6;">
-            本アプリケーションは架空のものであり、実際の決済には使用できません。<br>
-            また、文中に登場する鉄道会社、駅名、地名等はすべて架空のものであり、実在のものとは一切関係ありません。
-
-        </div>
-      </div>
-
-      <div id="view-payment" style="display: none;">
-        <div class="flash-overlay" id="flash"></div>
-        <div id="pay-waiting" style="padding:20px; text-align:center;">
-          <div style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); text-align:left;">
-            <div style="color:#888; font-size:12px;">残高</div>
-            <div class="yen" id="payment-balance">¥0</div>
-          </div>
-          <div class="touch-area" onclick="executePaymentAnimation()" style="margin-top:50px; cursor:pointer;">
-            <div class="touch-icon" style="width:70px; height:70px; border:3px solid #007aff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
-              <div style="width:25px; height:40px; border:2px solid #007aff; border-radius:4px;"></div>
-            </div>
-            <div style="color:#888; font-size:18px;">リーダーにかざしてください</div>
-          </div>
-          <div style="margin-top:30px; color:#007aff;" onclick="changeTab('main')">キャンセル</div>
-        </div>
-        <div class="success-animation" id="pay-success">
-          <svg class="checkmark-svg" viewBox="0 0 52 52">
-            <circle class="checkmark-circle" id="svg-circle" cx="26" cy="26" r="25" fill="none"/>
-            <path class="checkmark-check" id="svg-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-          </svg>
-          <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">支払い完了</div>
-          <div style="font-size: 20px; color: #666;" id="pay-amount-label">¥210</div>
+          最終更新: <span id="last-update-time">-</span><br><br>
+          本アプリケーションは架空のものであり、実際の決済には使用できません。<br>
+          また、文中に登場する鉄道会社、駅名、地名等はすべて架空のものであり、実在のものとは一切関係ありません。
         </div>
       </div>
     </div>
@@ -161,14 +206,14 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="stationModal"><div class="modal"><div id="modal-title" style="font-weight:bold; margin-bottom:15px;"></div><div id="station-options" style="display:grid; grid-template-columns:1fr; gap:8px; max-height:300px; overflow-y:auto;"></div><div style="margin-top:15px; color:#666;" onclick="closeStationModal()">閉じる</div></div></div>
-  <div class="modal-overlay" id="modalOverlay"><div class="modal"><div style="font-weight:bold; margin-bottom:15px;">チャージ</div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addBalance(1000)" style="padding:10px;">1,000円</button><button onclick="addBalance(3000)" style="padding:10px;">3,000円</button><button onclick="addBalance(5000)" style="padding:10px;">5,000円</button><button onclick="addBalance(10000)" style="padding:10px;">10,000円</button></div><div style="margin-top:15px; color:#666;" onclick="closeModal()">キャンセル</div></div></div>
+  <div class="modal-overlay" id="stationModal"><div class="modal"><div id="modal-title" style="font-weight:bold; margin-bottom:15px;"></div><div id="station-options" style="display:grid; grid-template-columns:1fr; gap:8px; max-height:300px; overflow-y:auto;"></div><div style="margin-top:15px; color:var(--text-sub);" onclick="closeStationModal()">閉じる</div></div></div>
+  <div class="modal-overlay" id="modalOverlay"><div class="modal"><div style="font-weight:bold; margin-bottom:15px;">チャージ</div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addBalance(1000)" style="padding:10px;">1,000円</button><button onclick="addBalance(3000)" style="padding:10px;">3,000円</button><button onclick="addBalance(5000)" style="padding:10px;">5,000円</button><button onclick="addBalance(10000)" style="padding:10px;">10,000円</button></div><div style="margin-top:15px; color:var(--text-sub);" onclick="closeModal()">キャンセル</div></div></div>
 
   <script>
     let currentBalance = 0;
     let historyData = [];
     let activeTicket = null;
-    let cardSettings = { nickname: "Misaca", color: "green" };
+    let cardSettings = { nickname: "Misaca", color: "green", theme: "auto" };
     let selRailway = "wakasa";
     let selFrom = null; let selTo = null;
 
@@ -184,44 +229,46 @@
       activeTicket = JSON.parse(localStorage.getItem('misaca_ticket'));
       cardSettings = JSON.parse(localStorage.getItem('misaca_settings')) || cardSettings;
       
-      // 管理画面の初期値反映
       document.getElementById('nickname-input').value = cardSettings.nickname;
+      setAppTheme(cardSettings.theme || 'auto');
       updateDisplay();
     };
 
+    function setAppTheme(mode) {
+      cardSettings.theme = mode;
+      const html = document.documentElement;
+      if (mode === 'auto') html.removeAttribute('data-theme');
+      else html.setAttribute('data-theme', mode);
+      
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`mode-${mode}`).classList.add('active');
+      localStorage.setItem('misaca_settings', JSON.stringify(cardSettings));
+    }
+
     function updateDisplay() {
       document.getElementById('balance-display').innerText = '¥' + currentBalance.toLocaleString();
-      document.getElementById('payment-balance').innerText = '¥' + currentBalance.toLocaleString();
-      document.getElementById('card-nickname-display').innerText = cardSettings.nickname;
       
-      // チケット
       const ticketDisp = document.getElementById('active-ticket');
       if(activeTicket) {
         ticketDisp.innerHTML = `<strong>【特急券情報】</strong><br>${activeTicket.railway}：${activeTicket.name}<br>区間：${activeTicket.from} → ${activeTicket.to}`;
         ticketDisp.style.display = 'block';
       } else { ticketDisp.style.display = 'none'; }
 
-      // カードの色反映
+      document.getElementById('card-nickname-display').innerText = cardSettings.nickname;
       document.getElementById('card-img').className = `misaca-img color-${cardSettings.color}`;
       
+      document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
+      const activeChip = document.getElementById(`chip-${cardSettings.color}`);
+      if(activeChip) activeChip.classList.add('active');
+
       localStorage.setItem('misaca_balance', currentBalance);
       localStorage.setItem('misaca_history', JSON.stringify(historyData));
       localStorage.setItem('misaca_ticket', JSON.stringify(activeTicket));
       localStorage.setItem('misaca_settings', JSON.stringify(cardSettings));
     }
 
-    // --- 管理ページ用ロジック ---
-    function updateNickname(val) {
-      cardSettings.nickname = val || "Misaca";
-      updateDisplay();
-    }
-
-    function setCardColor(color, el) {
-      cardSettings.color = color;
-      document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      updateDisplay();
-    }
+    function updateNickname(val) { cardSettings.nickname = val || "Misaca"; updateDisplay(); }
+    function setCardColor(color, el) { cardSettings.color = color; updateDisplay(); }
 
     function changeTab(target) {
       document.getElementById('main-scroll-area').scrollTop = 0;
@@ -230,52 +277,48 @@
       
       document.getElementById('header-text').innerText = (target === 'main') ? 'モバイルMisaca' : 
                                                          (target === 'express') ? '特急券・急行券を購入' :
-                                                         (target === 'history') ? 'SF履歴' : '管理';
+                                                         (target === 'history') ? 'SF履歴' : 
+                                                         (target === 'payment') ? '支払い' : '管理';
 
       document.getElementById(`view-${target}`).style.display = 'block';
       if(document.getElementById(`tab-${target}`)) document.getElementById(`tab-${target}`).classList.add('active');
       
-      // カードはメイン画面のみ表示
-      document.getElementById('common-card').style.display = (target === 'main') ? 'block' : 'none';
+      // カードはメイン画面と決済画面で表示
+      document.getElementById('common-card').style.display = (target === 'main' || target === 'payment') ? 'block' : 'none';
 
       if(target === 'history') renderHistory();
       if(target === 'admin') document.getElementById('last-update-time').innerText = new Date().toLocaleString();
     }
 
-    // --- 既存決済ロジック ---
-    function executePaymentAnimation() {
+    // シンプル決済ロジック（アニメーションなし）
+    function executePayment() {
       const cost = 210;
       if(currentBalance < cost) { alert("残高不足"); return; }
-      document.getElementById('pay-waiting').style.display = 'none';
-      document.getElementById('pay-success').style.display = 'block';
-      document.getElementById('pay-amount-label').innerText = '¥' + cost;
-      document.getElementById('flash').classList.add('flash-active');
-      document.getElementById('svg-circle').classList.add('draw-circle');
-      document.getElementById('svg-check').classList.add('draw-check');
-      currentBalance -= cost;
-      activeTicket = null;
-      historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: '電車利用', amount: -cost });
-      updateDisplay();
+      
+      // 擬似的な読み取り遅延
       setTimeout(() => {
+        currentBalance -= cost;
+        activeTicket = null;
+        historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: '電車利用', amount: -cost });
+        updateDisplay();
+        
+        // シンプルにアラートで完了通知
+        alert(`支払い完了\n¥${cost}`);
         changeTab('main');
-        document.getElementById('flash').classList.remove('flash-active');
-        document.getElementById('svg-circle').classList.remove('draw-circle');
-        document.getElementById('svg-check').classList.remove('draw-check');
-        document.getElementById('pay-waiting').style.display = 'block';
-        document.getElementById('pay-success').style.display = 'none';
-      }, 2500);
+      }, 500); // 0.5秒だけ待つ
     }
 
     function showPayment() { changeTab('payment'); }
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
     function addBalance(amount) { currentBalance += amount; historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: '現金チャージ', amount: amount }); updateDisplay(); closeModal(); }
-    // (駅選択や履歴描画の関数は前回のロジックを継承)
-    function renderHistory() { const container = document.getElementById('history-container'); container.innerHTML = ''; let lastMonth = ""; historyData.forEach(item => { const m = `${item.year}年${item.month}月`; if(m !== lastMonth) { const h = document.createElement('div'); h.className = 'history-month-header'; h.innerText = m; container.appendChild(h); lastMonth = m; } const li = document.createElement('div'); li.className = 'history-item'; li.innerHTML = `<div class="history-left"><div style="font-size:10px; color:#888;">${item.month}/${item.date}</div><div>${item.type}</div></div><div style="font-weight:700; ${item.amount<0?'':'color:#4fa36a;'}">${(item.amount<0?'':'+')+item.amount.toLocaleString()}</div>`; container.appendChild(li); }); }
+    
+    // 履歴・特急券ロジック
+    function renderHistory() { const container = document.getElementById('history-container'); container.innerHTML = ''; let lastMonth = ""; historyData.forEach(item => { const m = `${item.year}年${item.month}月`; if(m !== lastMonth) { const h = document.createElement('div'); h.className = 'history-month-header'; h.innerText = m; container.appendChild(h); lastMonth = m; } const li = document.createElement('div'); li.className = 'history-item'; li.innerHTML = `<div class="history-left"><div style="font-size:10px; color:var(--text-sub);">${item.month}/${item.date}</div><div>${item.type}</div></div><div style="font-weight:700; ${item.amount<0?'':'color:#4fa36a;'}">${(item.amount<0?'':'+')+item.amount.toLocaleString()}</div>`; container.appendChild(li); }); }
     function toggleRailway() { const keys = Object.keys(masterData); let idx = keys.indexOf(selRailway); selRailway = keys[(idx + 1) % keys.length]; selFrom = null; selTo = null; document.getElementById('disp-railway').innerText = masterData[selRailway].name; document.getElementById('disp-from').innerText = "未選択"; document.getElementById('disp-to').innerText = "未選択"; renderTrainList(); }
-    function openStationModal(type) { const modal = document.getElementById('stationModal'); const container = document.getElementById('station-options'); container.innerHTML = ''; document.getElementById('modal-title').innerText = type === 'from' ? "乗車駅" : "降車駅"; masterData[selRailway].stations.forEach(st => { const btn = document.createElement('button'); btn.style.padding = "12px"; btn.innerText = st; btn.onclick = () => { if(type === 'from') { selFrom = st; document.getElementById('disp-from').innerText = st; } else { selTo = st; document.getElementById('disp-to').innerText = st; } closeStationModal(); renderTrainList(); }; container.appendChild(btn); }); modal.style.display = 'flex'; }
+    function openStationModal(type) { const modal = document.getElementById('stationModal'); const container = document.getElementById('station-options'); container.innerHTML = ''; document.getElementById('modal-title').innerText = type === 'from' ? "乗車駅" : "降車駅"; masterData[selRailway].stations.forEach(st => { const btn = document.createElement('button'); btn.style.padding = "12px"; btn.innerText = st; btn.style.background = "var(--bg-input)"; btn.style.border = "1px solid var(--border-color)"; btn.style.color = "var(--text-main)"; btn.onclick = () => { if(type === 'from') { selFrom = st; document.getElementById('disp-from').innerText = st; } else { selTo = st; document.getElementById('disp-to').innerText = st; } closeStationModal(); renderTrainList(); }; container.appendChild(btn); }); modal.style.display = 'flex'; }
     function closeStationModal() { document.getElementById('stationModal').style.display = 'none'; }
-    function renderTrainList() { const container = document.getElementById('train-list-container'); container.innerHTML = ''; if(!selFrom || !selTo || selFrom === selTo) { container.innerHTML = '<div style="padding:20px; text-align:center; color:#999; background:#fff;">駅を選択してください</div>'; return; } const stations = masterData[selRailway].stations; const distance = Math.abs(stations.indexOf(selTo) - stations.indexOf(selFrom)); masterData[selRailway].trains.forEach(t => { const price = t.base + (distance * 150); const div = document.createElement('div'); div.className = 'train-item'; div.onclick = () => buyTicket(masterData[selRailway].name, t.name, price); div.innerHTML = `<div><div>${t.name}</div><div style="font-size:11px; color:#888;">${selFrom}→${selTo}</div></div><span class="train-price">¥${price}</span>`; container.appendChild(div); }); }
+    function renderTrainList() { const container = document.getElementById('train-list-container'); container.innerHTML = ''; if(!selFrom || !selTo || selFrom === selTo) { container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-sub); background:var(--bg-app);">駅を選択してください</div>'; return; } const stations = masterData[selRailway].stations; const distance = Math.abs(stations.indexOf(selTo) - stations.indexOf(selFrom)); masterData[selRailway].trains.forEach(t => { const price = t.base + (distance * 150); const div = document.createElement('div'); div.className = 'train-item'; div.onclick = () => buyTicket(masterData[selRailway].name, t.name, price); div.innerHTML = `<div><div>${t.name}</div><div style="font-size:11px; color:var(--text-sub);">${selFrom}→${selTo}</div></div><span class="train-price">¥${price}</span>`; container.appendChild(div); }); }
     function buyTicket(railway, name, price) { if(currentBalance < price) { alert("残高不足"); return; } if(confirm(`${name}\n¥${price}で購入しますか？`)) { currentBalance -= price; activeTicket = { railway, name, from: selFrom, to: selTo }; historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: name + " 券", amount: -price }); updateDisplay(); changeTab('main'); } }
   </script>
 </body>
