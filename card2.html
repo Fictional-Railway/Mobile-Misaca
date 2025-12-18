@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-<link rel="icon" href="./image/Misacaファビコン.png">
-
-<link rel="apple-touch-icon" href="./image/Misacaファビコン.png">
+  <link rel="icon" href="./image/Misacaファビコン.png">
+  <link rel="apple-touch-icon" href="./image/Misacaファビコン.png">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>モバイルMisaca</title>
 
@@ -45,7 +45,7 @@
     .content-area {
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 80px; /* タブバー分 */
+      padding-bottom: 80px;
     }
 
     /* --- カード部分 --- */
@@ -150,22 +150,9 @@
       border-bottom: 1px solid #eee;
     }
 
-    .history-left .date {
-      font-size: 12px;
-      color: #888;
-    }
-
-    .history-left .type {
-      font-size: 16px;
-      font-weight: 500;
-      margin-top: 2px;
-    }
-
-    .history-right {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
+    .history-left .date { font-size: 12px; color: #888; }
+    .history-left .type { font-size: 16px; font-weight: 500; margin-top: 2px; }
+    .history-right { font-size: 18px; font-weight: 700; }
     .minus { color: #000; }
     .plus { color: #4fa36a; }
 
@@ -231,8 +218,7 @@
 
       <div id="view-history" style="display: none;">
         <div style="padding: 16px; font-weight: bold; background: #f9f9f9; border-bottom: 1px solid #eee;">SF履歴</div>
-        <ul class="history-list" id="history-container">
-          </ul>
+        <ul class="history-list" id="history-container"></ul>
       </div>
     </div>
 
@@ -254,7 +240,7 @@
         <button class="amount-btn" onclick="addBalance(5000)">5,000円</button>
         <button class="amount-btn" onclick="addBalance(10000)">10,000円</button>
       </div>
-      <div style="margin-top:15px; color:#666; cursor:pointer; text-decoration:underline;" onclick="closeModal()">キャンセル</div>
+      <div style="margin-top:15px; color:#666; cursor:pointer;" onclick="closeModal()">キャンセル</div>
     </div>
   </div>
 
@@ -263,11 +249,17 @@
     let historyData = [];
 
     window.onload = function() {
-      // 残高の復元
+      // 残高の読み込み
       const savedBalance = localStorage.getItem('misaca_balance');
-      currentBalance = savedBalance !== null ? parseInt(savedBalance, 10) : 10000;
+      if (savedBalance !== null) {
+        currentBalance = parseInt(savedBalance, 10);
+      } else {
+        // --- 初期設定を 1,000円 に変更しました ---
+        currentBalance = 1000;
+        saveToStorage();
+      }
 
-      // 履歴の復元
+      // 履歴の読み込み
       const savedHistory = localStorage.getItem('misaca_history');
       historyData = savedHistory !== null ? JSON.parse(savedHistory) : [];
 
@@ -279,90 +271,68 @@
       const formatted = '¥' + currentBalance.toLocaleString();
       document.getElementById('balance-display').innerText = formatted;
       document.getElementById('payment-balance').innerText = formatted;
+      saveToStorage();
+    }
+
+    function saveToStorage() {
       localStorage.setItem('misaca_balance', currentBalance);
       localStorage.setItem('misaca_history', JSON.stringify(historyData));
     }
 
-    // --- 履歴追加機能 ---
     function addHistory(type, amount) {
       const now = new Date();
       const dateStr = (now.getMonth() + 1) + '/' + now.getDate();
-      
-      // 新しい履歴を配列の最初に追加
-      historyData.unshift({
-        date: dateStr,
-        type: type,
-        amount: amount
-      });
-      
+      historyData.unshift({ date: dateStr, type: type, amount: amount });
       renderHistory();
     }
 
     function renderHistory() {
       const container = document.getElementById('history-container');
       container.innerHTML = '';
-      
       historyData.forEach(item => {
         const li = document.createElement('li');
         li.className = 'history-item';
-        
         const isMinus = item.amount < 0;
-        const displayAmount = (isMinus ? '' : '+') + item.amount.toLocaleString();
-        
         li.innerHTML = `
           <div class="history-left">
             <div class="date">${item.date}</div>
             <div class="type">${item.type}</div>
           </div>
           <div class="history-right ${isMinus ? 'minus' : 'plus'}">
-            ${displayAmount}
-          </div>
-        `;
+            ${(isMinus ? '' : '+') + item.amount.toLocaleString()}
+          </div>`;
         container.appendChild(li);
       });
     }
 
-    // --- 画面切り替え（タブ） ---
     function changeTab(target) {
-      const mainView = document.getElementById('view-main');
-      const paymentView = document.getElementById('view-payment');
-      const historyView = document.getElementById('view-history');
-      const card = document.getElementById('common-card');
-      const header = document.getElementById('header-text');
-      const tabbar = document.getElementById('main-tabbar');
-
-      // 全非表示
-      mainView.style.display = 'none';
-      paymentView.style.display = 'none';
-      historyView.style.display = 'none';
+      document.getElementById('view-main').style.display = 'none';
+      document.getElementById('view-payment').style.display = 'none';
+      document.getElementById('view-history').style.display = 'none';
       document.getElementById('tab-main').classList.remove('active');
       document.getElementById('tab-history').classList.remove('active');
 
       if (target === 'main') {
-        mainView.style.display = 'block';
-        card.style.display = 'block';
-        tabbar.style.display = 'flex';
-        header.innerText = 'モバイルMisaca';
+        document.getElementById('view-main').style.display = 'block';
+        document.getElementById('common-card').style.display = 'block';
+        document.getElementById('main-tabbar').style.display = 'flex';
+        document.getElementById('header-text').innerText = 'モバイルMisaca';
         document.getElementById('tab-main').classList.add('active');
-      } 
-      else if (target === 'history') {
-        historyView.style.display = 'block';
-        card.style.display = 'none'; // 履歴画面ではカードを隠す
-        tabbar.style.display = 'flex';
-        header.innerText = 'SF履歴';
+      } else if (target === 'history') {
+        document.getElementById('view-history').style.display = 'block';
+        document.getElementById('common-card').style.display = 'none';
+        document.getElementById('header-text').innerText = 'SF履歴';
+        document.getElementById('tab-history').classList.add('addive');
         document.getElementById('tab-history').classList.add('active');
-      }
-      else if (target === 'payment') {
-        paymentView.style.display = 'block';
-        card.style.display = 'block';
-        tabbar.style.display = 'none'; // 決済中はタブを隠す
-        header.innerText = '支払い';
+      } else if (target === 'payment') {
+        document.getElementById('view-payment').style.display = 'block';
+        document.getElementById('main-tabbar').style.display = 'none';
+        document.getElementById('header-text').innerText = '支払い';
       }
     }
 
     function showPayment() { changeTab('payment'); }
 
-    // --- 決済実行 ---
     function executePayment() {
       const cost = 210;
       if (currentBalance < cost) {
@@ -378,7 +348,6 @@
       }, 300);
     }
 
-    // --- チャージ機能 ---
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
     function addBalance(amount) {
@@ -388,9 +357,7 @@
       closeModal();
     }
 
-    window.onclick = function(e) {
-      if (e.target == document.getElementById('modalOverlay')) closeModal();
-    };
+    window.onclick = function(e) { if (e.target == document.getElementById('modalOverlay')) closeModal(); };
   </script>
 
 </body>
