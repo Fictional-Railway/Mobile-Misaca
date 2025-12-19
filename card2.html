@@ -31,6 +31,11 @@
       --accent-red: #ff3b30;
     }
 
+    html, body {
+  overflow: hidden; /* 縦・横スクロールを禁止 */
+  /* height: 100vh;  -- 画面いっぱいにしたい場合 */
+}
+
     /* ダークモード自動対応 */
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
