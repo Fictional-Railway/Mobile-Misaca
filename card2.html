@@ -88,7 +88,6 @@
     .use-btn { background-color: #5983b9; }
 
     /* 決済画面のリーダー演出 */
-    .pay-info-box { background:var(--bg-section); padding:20px; border-radius:12px; box-shadow:0 2px 8px var(--shadow-color); text-align:left; margin-bottom: 40px; }
     .reader-circle { width:80px; height:80px; border:4px solid var(--accent-blue); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; transition: border-color 0.2s, background-color 0.2s; }
     .reader-phone { width:28px; height:46px; border:3px solid var(--accent-blue); border-radius:4px; transition: border-color 0.2s; }
     
@@ -127,7 +126,7 @@
     .train-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .train-price { font-weight: bold; color: #007aff; }
 
-    /* アプリインストール推奨ガイド（ブラウザ時のみ表示） */
+    /* アプリインストール推奨ガイド */
     .install-guide {
       position: fixed; bottom: 70px; left: 5%; width: 90%; box-sizing: border-box;
       background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
@@ -136,39 +135,6 @@
       text-align: center; border: 1px solid var(--border-color); display: none;
     }
     [data-theme="dark"] .install-guide { background: rgba(30,30,30,0.95); border-color: #444; color: #fff; }
-
-    /* カードの光沢エフェクト用 */
-.card-container {
-  perspective: 1000px; /* 3D感の隠し味 */
-}
-
-.misaca-wrapper {
-  position: relative;
-  display: inline-block;
-  transition: transform 0.1s ease-out;
-  overflow: hidden;
-  border-radius: 11px;
-}
-
-.shine-layer {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  /* 控えめな白い光の筋 */
-  background: linear-gradient(
-    115deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.15) 45%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.15) 55%,
-    transparent 60%
-  );
-  pointer-events: none; /* タップの邪魔をしない */
-  transform: translate(0, 0);
-  transition: transform 0.1s ease-out;
-}
   </style>
 </head>
 <body>
@@ -193,6 +159,8 @@
 
       <div id="view-payment" style="display: none; padding-top: 20px;">
         <div id="payment-box-container" style="padding: 0 20px; text-align: center;">
+          <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 4px;">お支払い金額</div>
+          <div id="payment-amount" style="font-size: 32px; font-weight: bold; margin-bottom: 24px;">¥0</div>
           
           <div class="touch-area" onclick="executePayment()" style="cursor:pointer;">
             <div class="reader-circle">
@@ -201,7 +169,7 @@
             <div id="payment-instruction" style="color:var(--text-sub); font-size:18px; transition: color 0.2s;">リーダーにかざしてください</div>
           </div>
           
-          <div style="margin-top:20px; color:var(--accent-blue); font-weight:500;" onclick="changeTab('main')">キャンセル</div>
+          <div style="margin-top:30px; color:var(--accent-blue); font-weight:500; cursor:pointer;" onclick="changeTab('main')">キャンセル</div>
         </div>
       </div>
 
@@ -242,7 +210,7 @@
         </div>
 
         <div class="admin-section" style="font-size: 11px; color: var(--text-sub); line-height: 1.6;">
-          カード番号: 4502-****-****-9012<br>
+          カード番号: <span id="card-number-display">-----****-****-****</span><br>
           最終更新: <span id="last-update-time">-</span><br><br>
           本アプリケーションは架空のものであり、実際の決済には使用できません。<br>
           また、文中に登場する鉄道会社、駅名、地名等はすべて架空のものであり、実在のものとは一切関係ありません。
@@ -264,14 +232,14 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="stationModal"><div class="modal"><div id="modal-title" style="font-weight:bold; margin-bottom:15px;"></div><div id="station-options" style="display:grid; grid-template-columns:1fr; gap:8px; max-height:300px; overflow-y:auto;"></div><div style="margin-top:15px; color:var(--text-sub);" onclick="closeStationModal()">閉じる</div></div></div>
-  <div class="modal-overlay" id="modalOverlay"><div class="modal"><div style="font-weight:bold; margin-bottom:15px;">チャージ</div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addBalance(1000)" style="padding:10px;">1,000円</button><button onclick="addBalance(2000)" style="padding:10px;">2,000円</button><button onclick="addBalance(3000)" style="padding:10px;">3,000円</button><button onclick="addBalance(5000)" style="padding:10px;">5,000円</button><button onclick="addBalance(7000)" style="padding:10px;">7,000円</button><button onclick="addBalance(10000)" style="padding:10px;">10,000円</button></div><div style="margin-top:15px; color:var(--text-sub);" onclick="closeModal()">キャンセル</div></div></div>
+  <div class="modal-overlay" id="stationModal"><div class="modal"><div id="modal-title" style="font-weight:bold; margin-bottom:15px;"></div><div id="station-options" style="display:grid; grid-template-columns:1fr; gap:8px; max-height:300px; overflow-y:auto;"></div><div style="margin-top:15px; color:var(--text-sub); cursor:pointer;" onclick="closeStationModal()">閉じる</div></div></div>
+  <div class="modal-overlay" id="modalOverlay"><div class="modal"><div style="font-weight:bold; margin-bottom:15px;">チャージ</div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addBalance(1000)" style="padding:10px;">1,000円</button><button onclick="addBalance(2000)" style="padding:10px;">2,000円</button><button onclick="addBalance(3000)" style="padding:10px;">3,000円</button><button onclick="addBalance(5000)" style="padding:10px;">5,000円</button><button onclick="addBalance(7000)" style="padding:10px;">7,000円</button><button onclick="addBalance(10000)" style="padding:10px;">10,000円</button></div><div style="margin-top:15px; color:var(--text-sub); cursor:pointer;" onclick="closeModal()">キャンセル</div></div></div>
 
   <script>
     let currentBalance = 0;
     let historyData = [];
     let activeTicket = null;
-    let cardSettings = { nickname: "Misaca", color: "green", theme: "auto" };
+    let cardSettings = { nickname: "Misaca", color: "green", theme: "auto", cardNumber: "" };
     let selRailway = "wakasa";
     let selFrom = null; let selTo = null;
     let currentRandomFare = 0;
@@ -282,6 +250,11 @@
       sofu: { name: "蒼風急行", stations: ["東江", "葉が山", "月見池公園口" ,"美浜", "蒼急牧野", "高島市"], trains: [{name: "特急せせらぎ", base: 400}] },
       kyobashi: { name: "京橋鉄道", stations: ["香津", "万竹", "早手川" ,"北若狭" ,"若狭" ,"県庁前" ,"西銀樂" ,"絹野" ,"七宮" ,"瓜津浜" ,"駄銭路" ,"馬土川" ,"日谷", "正岡", "松尾", "雪吹", "舞鶴", "物部海岸", "東物部", "物部", "市崎", "舟谷", "伊舟", "秦見", "月の原", "大房", "橋田", "鳥山", "中甲日", "阿田", "歌川", "文阪橋"], trains: [{name: "特急早手", base: 600}, {name: "特急徳峰", base: 600}, {name: "特急文阪", base: 600}] }
     };
+    // カード番号生成関数
+    function generateCardNumber() {
+      const r = () => Math.floor(Math.random() * 9000 + 1000);
+      return `4502-${r()}-${r()}-${r()}`;
+    }
 
     window.onload = function() {
       currentBalance = parseInt(localStorage.getItem('misaca_balance')) || 1000;
@@ -289,11 +262,15 @@
       activeTicket = JSON.parse(localStorage.getItem('misaca_ticket'));
       cardSettings = JSON.parse(localStorage.getItem('misaca_settings')) || cardSettings;
       
+      // カード番号がなければ生成して保存
+      if (!cardSettings.cardNumber) {
+        cardSettings.cardNumber = generateCardNumber();
+      }
+
       document.getElementById('nickname-input').value = cardSettings.nickname;
       setAppTheme(cardSettings.theme || 'auto');
       updateDisplay();
 
-      // PWA判定 (アプリモードでない場合のみガイドを表示)
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
       if (!isStandalone) {
         document.getElementById('install-guide').style.display = 'block';
@@ -322,6 +299,7 @@
 
       document.getElementById('card-nickname-display').innerText = cardSettings.nickname;
       document.getElementById('card-img').className = `misaca-img color-${cardSettings.color}`;
+      document.getElementById('card-number-display').innerText = cardSettings.cardNumber;
       
       document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
       const activeChip = document.getElementById(`chip-${cardSettings.color}`);
@@ -337,31 +315,27 @@
     function setCardColor(color, el) { cardSettings.color = color; updateDisplay(); }
 
     function changeTab(target) {
-      if(isProcessing) return; // 処理中はタブ切り替え禁止
-
+      if(isProcessing) return;
       document.getElementById('main-scroll-area').scrollTop = 0;
       ['view-main', 'view-express', 'view-history', 'view-admin', 'view-payment'].forEach(v => document.getElementById(v).style.display = 'none');
       ['tab-main', 'tab-express', 'tab-history', 'tab-admin'].forEach(t => document.getElementById(t).classList.remove('active'));
       
       document.getElementById('header-text').innerText = (target === 'main') ? 'モバイルMisaca' : 
-                                                         (target === 'express') ? '特急券・急行券を購入' :
+                                                         (target === 'express') ? '特急券を購入' :
                                                          (target === 'history') ? 'SF履歴' : 
-                                                         (target === 'payment') ? '支払い' : '管理';
+                                                         (target === 'payment') ? 'お支払い' : '管理';
 
       document.getElementById(`view-${target}`).style.display = 'block';
       if(document.getElementById(`tab-${target}`)) document.getElementById(`tab-${target}`).classList.add('active');
-      
       document.getElementById('common-card').style.display = (target === 'main' || target === 'payment') ? 'block' : 'none';
 
-      if(target === 'history') renderHistory();
-      if(target === 'admin') document.getElementById('last-update-time').innerText = new Date().toLocaleString();
-      
-      // 決済画面に行くときにランダムな料金を生成
       if(target === 'payment') {
         currentRandomFare = Math.floor(Math.random() * (1150 - 170 + 1)) + 170;
         document.getElementById('payment-amount').innerText = '¥' + currentRandomFare.toLocaleString();
-        resetPaymentUI(); // UIを初期状態へ
+        resetPaymentUI();
       }
+      if(target === 'history') renderHistory();
+      if(target === 'admin') document.getElementById('last-update-time').innerText = new Date().toLocaleString();
     }
 
     function resetPaymentUI() {
@@ -372,57 +346,116 @@
 
     function executePayment() {
       if(isProcessing) return;
-
-      // 残高不足判定
       if(currentBalance < currentRandomFare) {
         showErrorUI();
         return;
       }
-
       isProcessing = true;
+      document.getElementById('payment-instruction').innerText = "決済中...";
       setTimeout(() => {
         currentBalance -= currentRandomFare;
         activeTicket = null;
         historyData.unshift({ 
-          year: new Date().getFullYear(), 
-          month: new Date().getMonth()+1, 
-          date: new Date().getDate(), 
-          type: '電車利用', 
-          amount: -currentRandomFare 
+          year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), 
+          type: '電車利用', amount: -currentRandomFare 
         });
         updateDisplay();
-        
         alert(`支払い完了\n¥${currentRandomFare.toLocaleString()}`);
         isProcessing = false;
         changeTab('main');
-      }, 500);
+      }, 800);
     }
 
     function showErrorUI() {
       const container = document.getElementById('payment-box-container');
-      const instruction = document.getElementById('payment-instruction');
-      
-      // クラス付与で赤くする
       container.classList.add('error');
-      instruction.innerText = "残高が不足しています";
-
-      // 2秒後に元に戻す
-      setTimeout(() => {
-        resetPaymentUI();
-      }, 2000);
+      document.getElementById('payment-instruction').innerText = "残高が不足しています";
+      setTimeout(resetPaymentUI, 2000);
     }
 
     function showPayment() { changeTab('payment'); }
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-    function addBalance(amount) { currentBalance += amount; historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: '現金チャージ', amount: amount }); updateDisplay(); closeModal(); }
+    function addBalance(amount) { 
+      currentBalance += amount; 
+      historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: '現金チャージ', amount: amount }); 
+      updateDisplay(); closeModal(); 
+    }
     
-    function renderHistory() { const container = document.getElementById('history-container'); container.innerHTML = ''; let lastMonth = ""; historyData.forEach(item => { const m = `${item.year}年${item.month}月`; if(m !== lastMonth) { const h = document.createElement('div'); h.className = 'history-month-header'; h.innerText = m; container.appendChild(h); lastMonth = m; } const li = document.createElement('div'); li.className = 'history-item'; li.innerHTML = `<div class="history-left"><div style="font-size:10px; color:var(--text-sub);">${item.month}/${item.date}</div><div>${item.type}</div></div><div style="font-weight:700; ${item.amount<0?'':'color:#4fa36a;'}">${(item.amount<0?'':'+')+item.amount.toLocaleString()}</div>`; container.appendChild(li); }); }
-    function toggleRailway() { const keys = Object.keys(masterData); let idx = keys.indexOf(selRailway); selRailway = keys[(idx + 1) % keys.length]; selFrom = null; selTo = null; document.getElementById('disp-railway').innerText = masterData[selRailway].name; document.getElementById('disp-from').innerText = "未選択"; document.getElementById('disp-to').innerText = "未選択"; renderTrainList(); }
-    function openStationModal(type) { const modal = document.getElementById('stationModal'); const container = document.getElementById('station-options'); container.innerHTML = ''; document.getElementById('modal-title').innerText = type === 'from' ? "乗車駅" : "降車駅"; masterData[selRailway].stations.forEach(st => { const btn = document.createElement('button'); btn.style.padding = "12px"; btn.innerText = st; btn.style.background = "var(--bg-input)"; btn.style.border = "1px solid var(--border-color)"; btn.style.color = "var(--text-main)"; btn.onclick = () => { if(type === 'from') { selFrom = st; document.getElementById('disp-from').innerText = st; } else { selTo = st; document.getElementById('disp-to').innerText = st; } closeStationModal(); renderTrainList(); }; container.appendChild(btn); }); modal.style.display = 'flex'; }
+    function renderHistory() { 
+      const container = document.getElementById('history-container'); 
+      container.innerHTML = ''; 
+      let lastMonth = ""; 
+      historyData.forEach(item => { 
+        const m = `${item.year}年${item.month}月`; 
+        if(m !== lastMonth) { 
+          const h = document.createElement('div'); h.className = 'history-month-header'; h.innerText = m; container.appendChild(h); lastMonth = m; 
+        } 
+        const li = document.createElement('div'); 
+        li.className = 'history-item'; 
+        li.innerHTML = `<div class="history-left"><div style="font-size:10px; color:var(--text-sub);">${item.month}/${item.date}</div><div>${item.type}</div></div><div style="font-weight:700; ${item.amount<0?'':'color:#4fa36a;'}">${(item.amount<0?'':'+')+item.amount.toLocaleString()}</div>`; 
+        container.appendChild(li); 
+      }); 
+    }
+
+    function toggleRailway() { 
+      const keys = Object.keys(masterData); 
+      let idx = keys.indexOf(selRailway); 
+      selRailway = keys[(idx + 1) % keys.length]; 
+      selFrom = null; selTo = null; 
+      document.getElementById('disp-railway').innerText = masterData[selRailway].name; 
+      document.getElementById('disp-from').innerText = "未選択"; 
+      document.getElementById('disp-to').innerText = "未選択"; 
+      renderTrainList(); 
+    }
+
+    function openStationModal(type) { 
+      const modal = document.getElementById('stationModal'); 
+      const container = document.getElementById('station-options'); 
+      container.innerHTML = ''; 
+      document.getElementById('modal-title').innerText = type === 'from' ? "乗車駅" : "降車駅"; 
+      masterData[selRailway].stations.forEach(st => { 
+        const btn = document.createElement('button'); 
+        btn.style.padding = "12px"; btn.innerText = st; btn.style.background = "var(--bg-input)"; btn.style.border = "1px solid var(--border-color)"; btn.style.color = "var(--text-main)"; 
+        btn.onclick = () => { 
+          if(type === 'from') { selFrom = st; document.getElementById('disp-from').innerText = st; } 
+          else { selTo = st; document.getElementById('disp-to').innerText = st; } 
+          closeStationModal(); renderTrainList(); 
+        }; 
+        container.appendChild(btn); 
+      }); 
+      modal.style.display = 'flex'; 
+    }
+
     function closeStationModal() { document.getElementById('stationModal').style.display = 'none'; }
-    function renderTrainList() { const container = document.getElementById('train-list-container'); container.innerHTML = ''; if(!selFrom || !selTo || selFrom === selTo) { container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-sub); background:var(--bg-app);">駅を選択してください</div>'; return; } const stations = masterData[selRailway].stations; const distance = Math.abs(stations.indexOf(selTo) - stations.indexOf(selFrom)); masterData[selRailway].trains.forEach(t => { const price = t.base + (distance * 150); const div = document.createElement('div'); div.className = 'train-item'; div.onclick = () => buyTicket(masterData[selRailway].name, t.name, price); div.innerHTML = `<div><div>${t.name}</div><div style="font-size:11px; color:var(--text-sub);">${selFrom}→${selTo}</div></div><span class="train-price">¥${price}</span>`; container.appendChild(div); }); }
-    function buyTicket(railway, name, price) { if(currentBalance < price) { alert("残高不足"); return; } if(confirm(`${name}\n¥${price}で購入しますか？`)) { currentBalance -= price; activeTicket = { railway, name, from: selFrom, to: selTo }; historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: name + " 券", amount: -price }); updateDisplay(); changeTab('main'); } }
+
+    function renderTrainList() { 
+      const container = document.getElementById('train-list-container'); 
+      container.innerHTML = ''; 
+      if(!selFrom || !selTo || selFrom === selTo) { 
+        container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-sub);">駅を選択してください</div>'; return; 
+      } 
+      const stations = masterData[selRailway].stations; 
+      const distance = Math.abs(stations.indexOf(selTo) - stations.indexOf(selFrom)); 
+      masterData[selRailway].trains.forEach(t => { 
+        const price = t.base + (distance * 100); 
+        const div = document.createElement('div'); 
+        div.className = 'train-item'; 
+        div.onclick = () => buyTicket(masterData[selRailway].name, t.name, price); 
+        div.innerHTML = `<div><div>${t.name}</div><div style="font-size:11px; color:var(--text-sub);">${selFrom}→${selTo}</div></div><span class="train-price">¥${price}</span>`; 
+        container.appendChild(div); 
+      }); 
+    }
+
+    function buyTicket(railway, name, price) { 
+      if(currentBalance < price) { alert("残高不足"); return; } 
+      if(confirm(`${name}\n¥${price}で購入しますか？`)) { 
+        currentBalance -= price; 
+        activeTicket = { railway, name, from: selFrom, to: selTo }; 
+        historyData.unshift({ year: new Date().getFullYear(), month: new Date().getMonth()+1, date: new Date().getDate(), type: name + " 券", amount: -price }); 
+        updateDisplay(); changeTab('main'); 
+      } 
+    }
   </script>
 </body>
 </html>
