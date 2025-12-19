@@ -136,6 +136,39 @@
       text-align: center; border: 1px solid var(--border-color); display: none;
     }
     [data-theme="dark"] .install-guide { background: rgba(30,30,30,0.95); border-color: #444; color: #fff; }
+
+    /* カードの光沢エフェクト用 */
+.card-container {
+  perspective: 1000px; /* 3D感の隠し味 */
+}
+
+.misaca-wrapper {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.1s ease-out;
+  overflow: hidden;
+  border-radius: 11px;
+}
+
+.shine-layer {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  /* 控えめな白い光の筋 */
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
+    transparent 60%
+  );
+  pointer-events: none; /* タップの邪魔をしない */
+  transform: translate(0, 0);
+  transition: transform 0.1s ease-out;
+}
   </style>
 </head>
 <body>
